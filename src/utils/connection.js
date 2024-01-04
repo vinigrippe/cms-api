@@ -3,10 +3,10 @@ const mysql = require("mysql2");
 require("dotenv").config();
 
 const connect = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: "35.197.207.164",
+  user: "vini",
+  password: "anode2012",
+  database: "python",
 });
 
 module.exports = connect;
