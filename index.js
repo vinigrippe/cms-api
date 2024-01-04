@@ -1,4 +1,5 @@
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const userRouter = require("./src/routes/users");
 const loginRouter = require("./src/routes/login");
@@ -9,6 +10,7 @@ const express = require("express");
 const app = express();
 const PORT = 4000;
 
+app.use(cors());
 app.use(bodyParser.json());
 
 app.use("/", userRouter);
