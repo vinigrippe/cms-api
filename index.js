@@ -21,7 +21,7 @@ app.use("/", designRouter);
 app.get("/ping", (_, res) => res.status(200).json("Pong!"));
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running at ${PORT}`);
 });
 
 module.exports = app;

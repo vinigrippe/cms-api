@@ -24,14 +24,12 @@ DesignSystem.create = (req, result) => {
     req.styleName,
   ];
 
-  connect.getConnection((err, connection) => {
-    connection.query(query, values, (error, res) => {
-      if (error) {
-        return result(501, { message: "Something got wrong", error });
-      }
+  connect.query(query, values, (error, res) => {
+    if (error) {
+      return result(501, { message: "Something got wrong", error });
+    }
 
-      return result(200, { message: "DesignSystem created successfully" });
-    });
+    return result(200, { message: "DesignSystem created successfully" });
   });
 };
 
@@ -47,15 +45,13 @@ DesignSystem.updateById = (req, result) => {
     req.id,
   ];
 
-  connect.getConnection((err, connection) => {
-    connection.query(query, values, (error, res) => {
-      if (error) {
-        return result(501, { message: "Something got wrong", error });
-      }
+  connect.query(query, values, (error, res) => {
+    if (error) {
+      return result(501, { message: "Something got wrong", error });
+    }
 
-      return result(200, {
-        message: "DesignSystem updated successfully",
-      });
+    return result(200, {
+      message: "DesignSystem updated successfully",
     });
   });
 };
@@ -64,28 +60,24 @@ DesignSystem.findAll = (_, result) => {
   const query = "SELECT * FROM design_system";
   const values = [];
 
-  connect.getConnection((err, connection) => {
-    connection.query(query, values, (error, res) => {
-      if (error) {
-        return result(501, { message: "Something got wrong", error });
-      }
+  connect.query(query, values, (error, res) => {
+    if (error) {
+      return result(501, { message: "Something got wrong", error });
+    }
 
-      return result(200, res);
-    });
+    return result(200, res);
   });
 };
 
 DesignSystem.deleteById = (req, result) => {
   const query = "DELETE FROM design_system WHERE id = ?";
 
-  connect.getConnection((err, connection) => {
-    connection.query(query, req.id, (error) => {
-      if (error) {
-        return result(501, { message: "Something got wrong", error });
-      }
+  connect.query(query, req.id, (error) => {
+    if (error) {
+      return result(501, { message: "Something got wrong", error });
+    }
 
-      return result(200, { message: "DesignSystem deleted successfully" });
-    });
+    return result(200, { message: "DesignSystem deleted successfully" });
   });
 };
 
