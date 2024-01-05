@@ -30,7 +30,7 @@ exports.create = async (req, res) => {
     url: req.body.url,
     elements: req.body.elements,
     status: req.body.status,
-    userId: req.body.userId,
+    userCreator: req.body.userCreator,
     id: req.body.id,
   });
 
@@ -46,10 +46,10 @@ exports.create = async (req, res) => {
       !req.body.url ||
       !req.body.elements ||
       !req.body.status ||
-      !req.body.userId
+      !req.body.userCreator
     ) {
       return res.status(400).send({
-        message: "Title, status, userId, elements and url are required!",
+        message: "Title, status, userCreator, elements and url are required!",
       });
     }
 

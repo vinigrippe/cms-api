@@ -1,11 +1,11 @@
 const connect = require("../utils/connection.js");
 
 class Page {
-  constructor({ id, title, url, userId, status, elements }) {
+  constructor({ id, title, url, userCreator, status, elements }) {
     this.id = id;
     this.status = status;
     this.url = url;
-    this.userId = userId;
+    this.userCreator = userCreator;
     this.title = title;
     this.elements = elements;
   }
@@ -13,13 +13,13 @@ class Page {
 
 Page.create = async (req, result) => {
   const query =
-    "INSERT INTO pages (title, elements, url, status, userId) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO pages (title, elements, url, status, userCreator) VALUES (?, ?, ?, ?, ?)";
   const values = [
     req.title,
     JSON.stringify(req.elements),
     req.url,
     req.status,
-    req.userId,
+    req.userCreator,
   ];
 
   connect.query(query, values, (error, res) => {
@@ -55,10 +55,10 @@ Page.updateById = async (req, result) => {
 
 Page.createHistory = async (req, result) => {
   const query =
-    "INSERT INTO page_history (pageId, userId, title, elements, status) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO page_history (pageId, userCreator, title, elements, status) VALUES (?, ?, ?, ?, ?)";
   const values = [
     req.id,
-    req.userId,
+    req.userCreator,
     req.title,
     JSON.stringify(req.elements),
     req.status,
@@ -101,7 +101,7 @@ Page.findHistoryById = async (req, result) => {
 
 Page.findAll = (_, result) => {
   const query =
-    "SELECT id, title, url, userId, status, creationDate, updateDate FROM pages";
+    "SELECT id, title, url, userCreator, status, creationDate, updateDate FROM pages";
   const values = [];
 
   connect.query(query, values, (error, res) => {
