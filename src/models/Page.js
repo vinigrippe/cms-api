@@ -1,11 +1,12 @@
 const connect = require("../utils/connection.js");
 
 class Page {
-  constructor({ id, title, url, userCreator, status, elements }) {
+  constructor({ id, title, url, userCreator, userId, status, elements }) {
     this.id = id;
     this.status = status;
     this.url = url;
     this.userCreator = userCreator;
+    this.userId = userId;
     this.title = title;
     this.elements = elements;
   }
@@ -33,9 +34,9 @@ Page.create = async (req, result) => {
 
 Page.updateById = async (req, result) => {
   let query =
-    "UPDATE pages SET elements = COALESCE(?, elements), title = COALESCE(?, title), url = COALESCE(?, url), status = COALESCE(?, status) WHERE id = ?";
+    "UPDATE pages SET elements = ?, title = COALESCE(?, title), url = COALESCE(?, url), status = COALESCE(?, status) WHERE id = ?";
   let values = [
-    req.elements && !isNaN(req.elements) ? JSON.stringify(req.elements) : null,
+    JSON.stringify(req.elements),
     req.title ? req.title : null,
     req.url ? req.url : null,
     req.status ? req.status : null,
@@ -55,13 +56,14 @@ Page.updateById = async (req, result) => {
 
 Page.createHistory = async (req, result) => {
   const query =
-    "INSERT INTO page_history (pageId, userCreator, title, elements, status) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO pages_history (pageId, userId, title, elements, status, url) VALUES (?, ?, ?, ?, ?, ?)";
   const values = [
     req.id,
-    req.userCreator,
+    req.userId,
     req.title,
     JSON.stringify(req.elements),
     req.status,
+    req.url,
   ];
 
   connect.query(query, values, (error, res) => {
@@ -88,7 +90,7 @@ Page.findById = async (req, result) => {
 };
 
 Page.findHistoryById = async (req, result) => {
-  const query = "SELECT * FROM page_history WHERE pageId = ?";
+  const query = "SELECT * FROM pages_history WHERE pageId = ?";
 
   connect.query(query, req.id, (error, res) => {
     if (error) {

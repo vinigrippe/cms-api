@@ -31,22 +31,43 @@ exports.create = async (req, res) => {
     elements: req.body.elements,
     status: req.body.status,
     userCreator: req.body.userCreator,
+    userId: req.body.userId,
     id: req.body.id,
   });
 
-  if (req.body.id) {
-    await Page.updateById(pageReq, async (status, data) => {
-      await Page.createHistory(pageReq, () => {
-        return res.status(status).send(data);
+  if (!pageReq.elements)
+    return res.status(400).send({ message: "Elements is required!" });
+
+  if (pageReq.id) {
+    const update = new Promise((resolve) => {
+      Page.updateById(pageReq, (status, data) => {
+        resolve({ status, data });
       });
     });
+
+    const history = new Promise((resolve) => {
+      Page.createHistory(pageReq, (status, data) => {
+        resolve({ status, data });
+      });
+    });
+
+    Promise.all([update, history])
+      .then(() => {
+        res.status(201).send({
+          message: "Page updated successfully!",
+          ...update.data,
+          ...history.data,
+        });
+      })
+      .catch((err) => {
+        res.status(500).send({ message: err.message });
+      });
   } else {
     if (
-      !req.body.title ||
-      !req.body.url ||
-      !req.body.elements ||
-      !req.body.status ||
-      !req.body.userCreator
+      !pageReq.title ||
+      !pageReq.url ||
+      !pageReq.status ||
+      !pageReq.userCreator
     ) {
       return res.status(400).send({
         message: "Title, status, userCreator, elements and url are required!",
