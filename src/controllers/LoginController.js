@@ -1,5 +1,14 @@
 const User = require("../models/User.js");
 
+exports.token = async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader?.split(" ")[1];
+
+  User.checkToken(token, (status, data) => {
+    return res.status(status).send(data);
+  });
+};
+
 exports.login = async (req, res) => {
   if (!req.body.username || !req.body.password) {
     return res.status(400).send({
