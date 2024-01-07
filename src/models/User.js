@@ -34,7 +34,7 @@ User.login = async (req, result) => {
 
   connect.query(query, values, async (error, res) => {
     if (error || res.length === 0) {
-      return result(501, { message: "Something got wrong", error });
+      return result(400, { message: "User has not found" });
     }
 
     const user = res[0];
@@ -42,7 +42,7 @@ User.login = async (req, result) => {
     const comparePassword = await bcrypt.compare(req.password, hashedPassword);
 
     if (!comparePassword) {
-      return result(501, { message: "Invalid credentials" });
+      return result(400, { message: "Invalid credentials" });
     }
 
     const token = jwt.sign(
@@ -59,7 +59,18 @@ User.login = async (req, result) => {
         return result(501, { message: "Something got wrong", error });
       }
 
-      return result(200, { message: "Login successful", user, token });
+      return result(200, {
+        message: "Login successful",
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
+          username: user.username,
+          creationDate: user.creationDate,
+        },
+        token,
+      });
     });
   });
 };
@@ -75,6 +86,18 @@ User.logout = async (req, result) => {
     } else {
       return result(200, { message: "Logout successful" });
     }
+  });
+};
+
+User.checkToken = (req, result) => {
+  const query = "SELECT * FROM tokens WHERE token = ?";
+
+  connect.query(query, req, (error, res) => {
+    if (error) {
+      return result(400, { message: "Something got wrong", error });
+    }
+
+    return result(200, res);
   });
 };
 
