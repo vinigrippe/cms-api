@@ -94,10 +94,14 @@ User.checkToken = (req, result) => {
 
   connect.query(query, req, (error, res) => {
     if (error) {
-      return result(400, { message: "Something got wrong", error });
+      return result(401, {
+        token: false,
+        message: "Something got wrong",
+        error,
+      });
     }
 
-    return result(200, res);
+    return result(200, { ...res, token: true });
   });
 };
 
