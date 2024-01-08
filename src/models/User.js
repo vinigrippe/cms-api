@@ -101,7 +101,11 @@ User.checkToken = (req, result) => {
       });
     }
 
-    return result(200, { ...res, token: true });
+    if (res) {
+      return result(200, { ...res, token: true });
+    } else {
+      return result(401, { ...res, token: false });
+    }
   });
 };
 
