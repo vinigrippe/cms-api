@@ -1,7 +1,16 @@
 const connect = require("../utils/connection.js");
 
 class Page {
-  constructor({ id, title, url, userCreator, userId, status, elements }) {
+  constructor({
+    id,
+    title,
+    url,
+    userCreator,
+    userId,
+    status,
+    elements,
+    websiteId,
+  }) {
     this.id = id;
     this.status = status;
     this.url = url;
@@ -9,18 +18,20 @@ class Page {
     this.userId = userId;
     this.title = title;
     this.elements = elements;
+    this.websiteId = websiteId;
   }
 }
 
 Page.create = async (req, result) => {
   const query =
-    "INSERT INTO pages (title, elements, url, status, userCreator) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO pages (title, elements, url, status, userCreator, websiteId) VALUES (?, ?, ?, ?, ?, ?)";
   const values = [
     req.title,
     JSON.stringify(req.elements),
     req.url,
     req.status,
     req.userCreator,
+    req.websiteId,
   ];
 
   connect.query(query, values, (error, res) => {
@@ -101,12 +112,11 @@ Page.findHistoryById = async (req, result) => {
   });
 };
 
-Page.findAll = (_, result) => {
+Page.findAll = (req, result) => {
   const query =
-    "SELECT id, title, url, userCreator, status, creationDate, updateDate FROM pages";
-  const values = [];
+    "SELECT id, title, url, userCreator, status, creationDate, updateDate FROM pages WHERE websiteId = ? ORDER BY creationDate DESC";
 
-  connect.query(query, values, (error, res) => {
+  connect.query(query, req.websiteId, (error, res) => {
     if (error) {
       return result(501, { message: "Something got wrong", error });
     }

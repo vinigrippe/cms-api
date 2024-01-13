@@ -18,8 +18,18 @@ exports.get = async (req, res) => {
   });
 };
 
-exports.getAll = (_, res) => {
-  Page.findAll(_, (status, data) => {
+exports.getAll = (req, res) => {
+  if (!req.params.websiteId) {
+    return res.status(400).send({
+      message: "Website ID is required!",
+    });
+  }
+
+  const pageReq = new Page({
+    websiteId: req.params.websiteId,
+  });
+
+  Page.findAll(pageReq, (status, data) => {
     return res.status(status).send(data);
   });
 };
