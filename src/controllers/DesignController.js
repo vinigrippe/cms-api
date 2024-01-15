@@ -6,6 +6,7 @@ exports.create = (req, res) => {
     element: req.body.element,
     name: req.body.name,
     id: req.body.id,
+    pageId: req.body.pageId,
   });
 
   if (desReq.id) {
@@ -13,7 +14,7 @@ exports.create = (req, res) => {
       return res.status(status).send(data);
     });
   } else {
-    if (!desReq.element || !desReq.name) {
+    if (!desReq.element || !desReq.name || !desReq.pageId) {
       return res.status(400).send({
         message: "Element and Name are required!",
       });
@@ -35,8 +36,12 @@ exports.delete = (req, res) => {
   });
 };
 
-exports.getAll = (_, res) => {
-  Design.findAll((status, data) => {
+exports.getAll = (req, res) => {
+  const desReq = new Design({
+    pageId: req.params.pageId,
+  });
+
+  Design.findAll(desReq, (status, data) => {
     const promises = data.map((element) => {
       return new Promise((resolve) => {
         Style.findByDesignId(element, (_, styles) => {

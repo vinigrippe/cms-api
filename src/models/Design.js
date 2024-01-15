@@ -1,18 +1,19 @@
 const connect = require("../utils/connection.js");
 
 class Design {
-  constructor({ id, name, element }) {
+  constructor({ id, name, element, pageId }) {
     this.id = id;
     this.name = name;
     this.element = element;
+    this.pageId = pageId;
   }
 }
 
 Design.create = (req, result) => {
-  const query = "INSERT INTO design (element, name) VALUES (?, ?)";
-  const values = [req.element, req.name];
+  const query = "INSERT INTO design (element, name, pageId) VALUES (?, ?, ?)";
+  const values = [req.element, req.name, req.pageId];
 
-  connect.query(query, values, (error, res) => {
+  connect.query(query, values, (error) => {
     if (error) {
       return result(501, { message: "Something got wrong", error });
     }
@@ -23,11 +24,12 @@ Design.create = (req, result) => {
 
 Design.updateById = (req, result) => {
   let query =
-    "UPDATE design SET name = COALESCE(?, name), element = COALESCE(?, element) WHERE id = ?";
+    "UPDATE design SET name = COALESCE(?, name), element = COALESCE(?, element), pageId = COALESCE(?, pageId) WHERE id = ?";
   let values = [
     req.name ? req.name : null,
     req.element ? req.element : null,
     req.id,
+    req.pageId ? req.pageId : null,
   ];
 
   connect.query(query, values, (error, res) => {
@@ -41,10 +43,10 @@ Design.updateById = (req, result) => {
   });
 };
 
-Design.findAll = (result) => {
-  const query = "SELECT * FROM design";
+Design.findAll = (req, result) => {
+  const query = "SELECT * FROM design WHERE pageId = ?";
 
-  connect.query(query, [], (error, res) => {
+  connect.query(query, req.pageId, (error, res) => {
     if (error) {
       result(501, { message: "Something got wrong", error });
     }

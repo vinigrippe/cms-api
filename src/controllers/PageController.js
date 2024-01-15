@@ -43,6 +43,7 @@ exports.create = async (req, res) => {
     userCreator: req.body.userCreator,
     userId: req.body.userId,
     id: req.body.id,
+    websiteId: req.body.websiteId,
   });
 
   if (!pageReq.elements)
@@ -77,10 +78,12 @@ exports.create = async (req, res) => {
       !pageReq.title ||
       !pageReq.url ||
       !pageReq.status ||
-      !pageReq.userCreator
+      !pageReq.userCreator ||
+      !pageReq.websiteId
     ) {
       return res.status(400).send({
-        message: "Title, status, userCreator, elements and url are required!",
+        message:
+          "Title, status, userCreator, websiteId, elements and url are required!",
       });
     }
 
